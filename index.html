@@ -1539,7 +1539,7 @@
         // 1. Importações (Sempre no topo do script)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // 2. Configuração do seu projeto
         const firebaseConfig = {
@@ -1558,21 +1558,67 @@
         const db = getFirestore(app);
 
         // 4. Função para salvar dados
-        async function salvarDadosTeste() {
-            try {
-                const docRef = await addDoc(collection(db, "teste"), {
-                    item: "Primeiro teste via Botão",
-                    data: new Date().toLocaleString("pt-BR")
-                });
-                
-                console.log("Documento escrito com ID: ", docRef.id);
-                alert("Dados salvos com sucesso no Firebase!");
-                location.reload(); 
-            } catch (e) {
-                console.error("Erro ao adicionar documento: ", e);
-                alert("Erro ao salvar: " + e.message);
-            }
-        }
+async function salvarDadosTeste() {
+    console.log("Iniciando salvamento...");
+    try {
+        // Capturando os valores dos campos do seu formulário
+        // Verifique se os IDs abaixo (ex: dataTrabalho) são os mesmos no seu HTML
+        const data = document.getElementById('dataApontamento').value;
+        const entrada = document.getElementById('horarioEntrada').value;
+        const observacoes = document.getElementById('observacoesApontamento').value;
+
+        const docRef = await addDoc(collection(db, "apontamentos"), {
+            data_trabalho: data,
+            horario_entrada: entrada,
+            notas: observacoes,
+            timestamp: new Date().toLocaleString("pt-BR")
+        });
+
+        console.log("Salvo com ID: ", docRef.id);
+        alert("✅ Salvo!");
+        listarApontamentos(); // Atualiza a tabela sem dar F5 na página inteira
+        
+        // Limpa o campo após salvar
+        document.getElementById('observacoesApontamento').value = '';
+        
+    } catch (e) {
+        console.error("Erro detalhado:", e);
+        alert("❌ Erro ao salvar: " + e.message);
+    }
+}
+        // Função para buscar dados e atualizar a tabela
+async function listarApontamentos() {
+    const listaTabela = document.querySelector('.table-container tbody'); // Verifique se este seletor bate com sua tabela
+    if (!listaTabela) return;
+
+    try {
+        const q = query(collection(db, "apontamentos"), orderBy("timestamp", "desc"));
+        const querySnapshot = await getDocs(q);
+        
+        listaTabela.innerHTML = ""; // Limpa a tabela antes de carregar
+
+        querySnapshot.forEach((doc) => {
+            const dados = doc.data();
+            const linha = `
+                <tr>
+                    <td>${dados.data_trabalho || '-'}</td>
+                    <td>${dados.horario_entrada || '-'}</td>
+                    <td>${dados.notas || '-'}</td>
+                    <td><span class="status-badge status-success">Registrado</span></td>
+                </tr>
+            `;
+            listaTabela.innerHTML += linha;
+        });
+    } catch (e) {
+        console.error("Erro ao listar:", e);
+    }
+}
+
+// Inicializa a listagem ao carregar a página
+listarApontamentos();
+
+// Torna global para caso precise chamar manualmente
+window.listarApontamentos = listarApontamentos;
 
         // 5. Torna a função visível para o botão HTML (Global)
         window.salvarDadosTeste = salvarDadosTeste;
