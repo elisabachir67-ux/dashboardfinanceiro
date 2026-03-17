@@ -1372,6 +1372,42 @@
                 atualizarProgresso();
             }
         }
+       
+        import { collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    function carregarRelatorio() {
+    const q = query(collection(db, "apontamentos"), orderBy("timestamp", "desc"));
+    
+    // O onSnapshot atualiza a página automaticamente toda vez que o banco muda
+    onSnapshot(q, (querySnapshot) => {
+        const corpoTabela = document.querySelector('tbody'); // Certifique-se de que sua tabela tem um <tbody>
+        corpoTabela.innerHTML = ""; // Limpa a tabela antes de recarregar
+
+        querySnapshot.forEach((doc) => {
+            const dados = doc.data();
+            
+            // Cria a linha da tabela com os dados do Firebase
+            const linha = `
+                <tr>
+                    <td>${dados.data_work || dados.data_trabalho}</td>
+                    <td>${dados.horario_entrada}</td>
+                    <td>${dados.horario_saida || '--:--'}</td>
+                    <td>-</td> 
+                    <td><span class="status-presente">Presente</span></td>
+                    <td>${dados.notas}</td>
+                    <td>
+                        <button class="btn-editar">Editar</button>
+                        <button class="btn-deletar">Deletar</button>
+                    </td>
+                </tr>
+            `;
+            corpoTabela.innerHTML += linha;
+        });
+    });
+}
+
+// Chama a função assim que a página carregar
+carregarRelatorio();
 
         // Funções de Documentos
         function enviarDocumento() {
