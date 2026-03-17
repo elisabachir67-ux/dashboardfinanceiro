@@ -1,2 +1,1538 @@
-# dashboardfinanceiro
-Dashboard - Financeiro
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo de Gestão de Prestadores de Serviço</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #667eea;
+        }
+
+        .nav-tab.active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            background: white;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-info {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            color: #0c5aa0;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background: #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .progress-fill.warning {
+            background: linear-gradient(90deg, #ffc107 0%, #ff9800 100%);
+        }
+
+        .progress-fill.danger {
+            background: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-info {
+            background: #e7f3ff;
+            color: #0c5aa0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stat-unit {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .file-upload {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            background: rgba(102, 126, 234, 0.05);
+            border-color: #764ba2;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .file-upload-text {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            animation: slideInUp 0.3s ease;
+            z-index: 2000;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success {
+            border-left: 4px solid #28a745;
+        }
+
+        .notification.warning {
+            border-left: 4px solid #ffc107;
+        }
+
+        .notification.error {
+            border-left: 4px solid #dc3545;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            font-size: 13px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn-edit {
+            background: #e7f3ff;
+            color: #0c5aa0;
+        }
+
+        .action-btn-edit:hover {
+            background: #2196F3;
+            color: white;
+        }
+
+        .action-btn-delete {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-btn-delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .action-btn-view {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .action-btn-view:hover {
+            background: #28a745;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏢 Gestão de Prestadores de Serviço</h1>
+            <div class="user-info">
+                <div class="user-avatar">JD</div>
+                <div>
+                    <div style="font-size: 14px;">João da Silva</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Prestador</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab(event, 'prestador')">📊 Painel do Prestador</button>
+            <button class="nav-tab" onclick="switchTab(event, 'apontamento')">⏱️ Apontamento de Horas</button>
+            <button class="nav-tab" onclick="switchTab(event, 'documentos')">📄 Documentos de Pagamento</button>
+            <button class="nav-tab" onclick="switchTab(event, 'relatorios')">📈 Relatórios</button>
+            <button class="nav-tab" onclick="switchTab(event, 'admin')">⚙️ Administração</button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- TAB 1: PAINEL DO PRESTADOR -->
+            <div id="prestador" class="tab-content active">
+                <div class="section-title">Painel do Prestador</div>
+
+                <!-- Alertas -->
+                <div id="alertContainer"></div>
+
+                <!-- Dashboard Stats -->
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Horas Trabalhadas (Mês)</div>
+                        <div class="stat-value" id="horasTrabalhadas">0</div>
+                        <div class="stat-unit">horas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Carga Horária Contratada</div>
+                        <div class="stat-value" id="cargaContratada">160</div>
+                        <div class="stat-unit">horas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Percentual Utilizado</div>
+                        <div class="stat-value" id="percentualUtilizado">0%</div>
+                        <div class="stat-unit">da carga horária</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Valor a Receber</div>
+                        <div class="stat-value" id="valorReceber">R$ 0</div>
+                        <div class="stat-unit">pendente</div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="card">
+                    <div class="card-title">Progresso de Carga Horária</div>
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Horas utilizadas</span>
+                            <span id="progressText">0 / 160 horas</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entrada/Saída Rápida -->
+                <div class="card">
+                    <div class="card-title">Registro Rápido de Entrada/Saída</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Horário de Entrada</label>
+                            <input type="time" id="entradaRapida" value="09:00">
+                        </div>
+                        <div class="form-group">
+                            <label>Horário de Saída</label>
+                            <input type="time" id="saidaRapida" value="18:00">
+                        </div>
+                        <div class="form-group">
+                            <label>Data</label>
+                            <input type="date" id="dataRapida">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="registrarEntradaSaida()">✓ Registrar Entrada/Saída</button>
+                        <button class="btn-secondary" onclick="abrirModalApontamento()">+ Apontamento Manual</button>
+                    </div>
+                </div>
+
+                <!-- Histórico de Pagamentos -->
+                <div class="card">
+                    <div class="card-title">Histórico de Pagamentos</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Período</th>
+                                <th>Valor</th>
+                                <th>Tipo</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaPagamentos">
+                            <tr>
+                                <td>Fevereiro 2026</td>
+                                <td>R$ 3.200,00</td>
+                                <td>RPA</td>
+                                <td><span class="badge badge-success">Pago</span></td>
+                                <td>28/02/2026</td>
+                            </tr>
+                            <tr>
+                                <td>Janeiro 2026</td>
+                                <td>R$ 3.200,00</td>
+                                <td>Nota Fiscal</td>
+                                <td><span class="badge badge-success">Pago</span></td>
+                                <td>31/01/2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: APONTAMENTO DE HORAS -->
+            <div id="apontamento" class="tab-content">
+                <div class="section-title">Apontamento de Horas Trabalhadas</div>
+
+                <div class="card">
+                    <div class="card-title">Registrar Novas Horas</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Data do Trabalho *</label>
+                            <input type="date" id="dataApontamento" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Horário de Entrada *</label>
+                            <input type="time" id="horarioEntrada" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Horário de Saída *</label>
+                            <input type="time" id="horarioSaida" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <textarea id="observacoesApontamento" placeholder="Descreva o trabalho realizado..."></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="salvarApontamento()">✓ Salvar Apontamento</button>
+                        <button class="btn-secondary" onclick="limparFormularioApontamento()">✕ Limpar</button>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="filter-section">
+                    <div class="filter-title">Filtros</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mês/Ano</label>
+                            <input type="month" id="filtroMes">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="filtroStatus">
+                                <option value="">Todos</option>
+                                <option value="presente">Presente</option>
+                                <option value="falta">Falta</option>
+                                <option value="falta_justificada">Falta Justificada</option>
+                                <option value="parcial">Trabalho Parcial</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-secondary" onclick="aplicarFiltros()">Aplicar Filtros</button>
+                </div>
+
+                <!-- Relatório de Horas -->
+                <div class="card">
+                    <div class="card-title">Relatório Mensal de Horas</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Entrada</th>
+                                <th>Saída</th>
+                                <th>Horas</th>
+                                <th>Status</th>
+                                <th>Observações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaApontamentos">
+                            <tr>
+                                <td>15/03/2026</td>
+                                <td>09:00</td>
+                                <td>18:00</td>
+                                <td>9h</td>
+                                <td><span class="badge badge-success">Presente</span></td>
+                                <td>Trabalho normal</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn action-btn-edit" onclick="editarApontamento(1)">Editar</button>
+                                        <button class="action-btn action-btn-delete" onclick="deletarApontamento(1)">Deletar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>14/03/2026</td>
+                                <td>09:00</td>
+                                <td>17:00</td>
+                                <td>8h</td>
+                                <td><span class="badge badge-success">Presente</span></td>
+                                <td>Trabalho normal</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn action-btn-edit" onclick="editarApontamento(2)">Editar</button>
+                                        <button class="action-btn action-btn-delete" onclick="deletarApontamento(2)">Deletar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 3: DOCUMENTOS DE PAGAMENTO -->
+            <div id="documentos" class="tab-content">
+                <div class="section-title">Documentos de Pagamento</div>
+
+                <div class="card">
+                    <div class="card-title">Enviar Documento de Pagamento</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tipo de Documento *</label>
+                            <select id="tipoDocumento" required>
+                                <option value="">Selecione...</option>
+                                <option value="nota_fiscal">Nota Fiscal</option>
+                                <option value="rpa">RPA</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Referência do Mês *</label>
+                            <input type="month" id="referenciaDocumento" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Valor a Receber *</label>
+                            <input type="number" id="valorDocumento" placeholder="0.00" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload do Arquivo (PDF ou Imagem) *</label>
+                        <div class="file-upload" onclick="document.getElementById('arquivoDocumento').click()">
+                            <div class="file-upload-icon">📎</div>
+                            <div class="file-upload-text">Clique para selecionar ou arraste o arquivo</div>
+                            <div style="font-size: 12px; color: #999; margin-top: 5px;">Formatos aceitos: PDF, JPG, PNG (máx. 10MB)</div>
+                            <input type="file" id="arquivoDocumento" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <textarea id="observacoesDocumento" placeholder="Adicione observações sobre este documento..."></textarea>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="enviarDocumento()">✓ Enviar Documento</button>
+                        <button class="btn-secondary" onclick="limparFormularioDocumento()">✕ Limpar</button>
+                    </div>
+                </div>
+
+                <!-- Documentos Enviados -->
+                <div class="card">
+                    <div class="card-title">Documentos Enviados</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Período</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Data Envio</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaDocumentos">
+                            <tr>
+                                <td>Nota Fiscal</td>
+                                <td>Fevereiro 2026</td>
+                                <td>R$ 3.200,00</td>
+                                <td><span class="badge badge-success">Aprovado</span></td>
+                                <td>28/02/2026</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn action-btn-view" onclick="visualizarDocumento(1)">Visualizar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>RPA</td>
+                                <td>Janeiro 2026</td>
+                                <td>R$ 3.200,00</td>
+                                <td><span class="badge badge-info">Pendente</span></td>
+                                <td>31/01/2026</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn action-btn-view" onclick="visualizarDocumento(2)">Visualizar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 4: RELATÓRIOS -->
+            <div id="relatorios" class="tab-content">
+                <div class="section-title">Relatórios</div>
+
+                <div class="card">
+                    <div class="card-title">Gerar Relatórios</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tipo de Relatório *</label>
+                            <select id="tipoRelatorio">
+                                <option value="">Selecione...</option>
+                                <option value="horas">Relatório de Horas Trabalhadas</option>
+                                <option value="financeiro">Relatório Financeiro</option>
+                                <option value="documentos">Relatório de Documentos</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Período Inicial *</label>
+                            <input type="date" id="dataInicio">
+                        </div>
+                        <div class="form-group">
+                            <label>Período Final *</label>
+                            <input type="date" id="dataFim">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Formato de Exportação *</label>
+                            <select id="formatoExportacao">
+                                <option value="pdf">PDF</option>
+                                <option value="excel">Excel</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="gerarRelatorio()">📥 Gerar e Baixar Relatório</button>
+                    </div>
+                </div>
+
+                <!-- Resumo de Relatórios -->
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total de Horas (Mês)</div>
+                        <div class="stat-value">160</div>
+                        <div class="stat-unit">horas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Dias Trabalhados</div>
+                        <div class="stat-value">20</div>
+                        <div class="stat-unit">dias</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Média Diária</div>
+                        <div class="stat-value">8</div>
+                        <div class="stat-unit">horas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Documentos Enviados</div>
+                        <div class="stat-value">2</div>
+                        <div class="stat-unit">documentos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: ADMINISTRAÇÃO -->
+            <div id="admin" class="tab-content">
+                <div class="section-title">Painel Administrativo</div>
+
+                <!-- Alertas Administrativos -->
+                <div class="alert alert-warning">
+                    ⚠️ <strong>Atenção:</strong> Há 2 prestadores próximos de atingir a carga horária contratada.
+                </div>
+
+                <!-- Filtros Administrativos -->
+                <div class="filter-section">
+                    <div class="filter-title">Filtros</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Prestador</label>
+                            <select id="filtroPrestador">
+                                <option value="">Todos</option>
+                                <option value="joao">João da Silva</option>
+                                <option value="maria">Maria Santos</option>
+                                <option value="pedro">Pedro Oliveira</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Mês</label>
+                            <input type="month" id="filtroMesAdmin">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="filtroStatusAdmin">
+                                <option value="">Todos</option>
+                                <option value="ativo">Ativo</option>
+                                <option value="bloqueado">Bloqueado</option>
+                                <option value="proximo_limite">Próximo do Limite</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-secondary" onclick="aplicarFiltrosAdmin()">Aplicar Filtros</button>
+                </div>
+
+                <!-- Lista de Prestadores -->
+                <div class="card">
+                    <div class="card-title">Gestão de Prestadores</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>CPF/CNPJ</th>
+                                <th>Horas (Mês)</th>
+                                <th>Carga Contratada</th>
+                                <th>% Utilizado</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaPrestadores">
+                            <tr>
+                                <td>João da Silva</td>
+                                <td>123.456.789-00</td>
+                                <td>128</td>
+                                <td>160</td>
+                                <td>
+                                    <div class="progress-bar" style="width: 100px; height: 20px;">
+                                        <div class="progress-fill warning" style="width: 80%">80%</div>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-warning">Próximo Limite</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn action-btn-edit" onclick="editarPrestador(1)">Editar</button>
+                                        <button class="action-btn action-btn-view" onclick="liberarAcesso(1)">Liberar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Maria Santos</td>
+                                <td>987.654.321-00</td>
+                                <td>160</td>
+                                <td>160</td>
+                                <td>
+                                    <div class="progress-bar" style="width: 100px; height: 20px;">
+                                        <div class="progress-fill danger" style="width: 100%">100%</div>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-danger">Bloqueado</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn action-btn-view" onclick="liberarAcesso(2)">Liberar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pedro Oliveira</td>
+                                <td>456.789.123-00</td>
+                                <td>80</td>
+                                <td>160</td>
+                                <td>
+                                    <div class="progress-bar" style="width: 100px; height: 20px;">
+                                        <div class="progress-fill" style="width: 50%">50%</div>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-success">Ativo</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn action-btn-edit" onclick="editarPrestador(3)">Editar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Documentos Pendentes de Aprovação -->
+                <div class="card">
+                    <div class="card-title">Documentos Pendentes de Aprovação</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Prestador</th>
+                                <th>Tipo</th>
+                                <th>Período</th>
+                                <th>Valor</th>
+                                <th>Data Envio</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaDocumentosPendentes">
+                            <tr>
+                                <td>João da Silva</td>
+                                <td>RPA</td>
+                                <td>Março 2026</td>
+                                <td>R$ 3.200,00</td>
+                                <td>17/03/2026</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn action-btn-view" onclick="aprovarDocumento(1)">Aprovar</button>
+                                        <button class="action-btn action-btn-delete" onclick="rejeitarDocumento(1)">Rejeitar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Liberação Administrativa -->
+    <div id="modalLiberacao" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Liberação Administrativa</h2>
+                <button class="close-btn" onclick="fecharModal('modalLiberacao')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Prestador</label>
+                <input type="text" id="prestadorLiberacao" readonly>
+            </div>
+            <div class="form-group">
+                <label>Motivo da Liberação *</label>
+                <textarea id="motivoLiberacao" placeholder="Descreva o motivo..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Horas Extras Autorizadas *</label>
+                <input type="number" id="horasExtras" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+                <label>Usuário Responsável</label>
+                <input type="text" value="Admin - Sistema" readonly>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="confirmarLiberacao()">✓ Confirmar Liberação</button>
+                <button class="btn-secondary" onclick="fecharModal('modalLiberacao')">✕ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Editar Apontamento -->
+    <div id="modalApontamento" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Apontamento</h2>
+                <button class="close-btn" onclick="fecharModal('modalApontamento')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Data do Trabalho *</label>
+                <input type="date" id="editDataApontamento" required>
+            </div>
+            <div class="form-group">
+                <label>Horário de Entrada *</label>
+                <input type="time" id="editHorarioEntrada" required>
+            </div>
+            <div class="form-group">
+                <label>Horário de Saída *</label>
+                <input type="time" id="editHorarioSaida" required>
+            </div>
+            <div class="form-group">
+                <label>Justificativa para Edição *</label>
+                <textarea id="justificativaEdicao" placeholder="Descreva o motivo da edição..."></textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="salvarEdicaoApontamento()">✓ Salvar Alterações</button>
+                <button class="btn-secondary" onclick="fecharModal('modalApontamento')">✕ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar data atual
+        document.getElementById('dataRapida').valueAsDate = new Date();
+        document.getElementById('dataApontamento').valueAsDate = new Date();
+        document.getElementById('filtroMes').valueAsDate = new Date();
+        document.getElementById('filtroMesAdmin').valueAsDate = new Date();
+
+        // Dados simulados
+        let apontamentos = [
+            { id: 1, data: '15/03/2026', entrada: '09:00', saida: '18:00', horas: 9, status: 'presente', obs: 'Trabalho normal' },
+            { id: 2, data: '14/03/2026', entrada: '09:00', saida: '17:00', horas: 8, status: 'presente', obs: 'Trabalho normal' }
+        ];
+
+        let documentos = [
+            { id: 1, tipo: 'Nota Fiscal', periodo: 'Fevereiro 2026', valor: 3200, status: 'Aprovado', data: '28/02/2026' },
+            { id: 2, tipo: 'RPA', periodo: 'Janeiro 2026', valor: 3200, status: 'Pendente', data: '31/01/2026' }
+        ];
+
+        // Funções de navegação
+        function switchTab(event, tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Funções de Modal
+        function abrirModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function fecharModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+            }
+        }
+
+        // Funções de Apontamento
+        function abrirModalApontamento() {
+            abrirModal('modalApontamento');
+        }
+
+        function registrarEntradaSaida() {
+            const entrada = document.getElementById('entradaRapida').value;
+            const saida = document.getElementById('saidaRapida').value;
+            const data = document.getElementById('dataRapida').value;
+
+            if (!entrada || !saida || !data) {
+                mostrarNotificacao('Por favor, preencha todos os campos', 'error');
+                return;
+            }
+
+            mostrarNotificacao('Entrada/Saída registrada com sucesso!', 'success');
+            atualizarProgresso();
+        }
+
+        function salvarApontamento() {
+            const data = document.getElementById('dataApontamento').value;
+            const entrada = document.getElementById('horarioEntrada').value;
+            const saida = document.getElementById('horarioSaida').value;
+            const obs = document.getElementById('observacoesApontamento').value;
+
+            if (!data || !entrada || !saida) {
+                mostrarNotificacao('Por favor, preencha os campos obrigatórios', 'error');
+                return;
+            }
+
+            const horas = calcularHoras(entrada, saida);
+            apontamentos.push({
+                id: apontamentos.length + 1,
+                data: formatarData(data),
+                entrada: entrada,
+                saida: saida,
+                horas: horas,
+                status: 'presente',
+                obs: obs
+            });
+
+            mostrarNotificacao('Apontamento salvo com sucesso!', 'success');
+            limparFormularioApontamento();
+            atualizarProgresso();
+        }
+
+        function limparFormularioApontamento() {
+            document.getElementById('dataApontamento').value = '';
+            document.getElementById('horarioEntrada').value = '';
+            document.getElementById('horarioSaida').value = '';
+            document.getElementById('observacoesApontamento').value = '';
+        }
+
+        function editarApontamento(id) {
+            const apontamento = apontamentos.find(a => a.id === id);
+            if (apontamento) {
+                document.getElementById('editDataApontamento').value = apontamento.data;
+                document.getElementById('editHorarioEntrada').value = apontamento.entrada;
+                document.getElementById('editHorarioSaida').value = apontamento.saida;
+                abrirModal('modalApontamento');
+            }
+        }
+
+        function salvarEdicaoApontamento() {
+            const justificativa = document.getElementById('justificativaEdicao').value;
+            if (!justificativa) {
+                mostrarNotificacao('Por favor, forneça uma justificativa', 'error');
+                return;
+            }
+            mostrarNotificacao('Apontamento editado com sucesso!', 'success');
+            fecharModal('modalApontamento');
+            atualizarProgresso();
+        }
+
+        function deletarApontamento(id) {
+            if (confirm('Tem certeza que deseja deletar este apontamento?')) {
+                apontamentos = apontamentos.filter(a => a.id !== id);
+                mostrarNotificacao('Apontamento deletado com sucesso!', 'success');
+                atualizarProgresso();
+            }
+        }
+
+        // Funções de Documentos
+        function enviarDocumento() {
+            const tipo = document.getElementById('tipoDocumento').value;
+            const referencia = document.getElementById('referenciaDocumento').value;
+            const valor = document.getElementById('valorDocumento').value;
+            const arquivo = document.getElementById('arquivoDocumento').value;
+
+            if (!tipo || !referencia || !valor || !arquivo) {
+                mostrarNotificacao('Por favor, preencha todos os campos obrigatórios', 'error');
+                return;
+            }
+
+            documentos.push({
+                id: documentos.length + 1,
+                tipo: tipo === 'nota_fiscal' ? 'Nota Fiscal' : 'RPA',
+                periodo: referencia,
+                valor: parseFloat(valor),
+                status: 'Pendente',
+                data: new Date().toLocaleDateString('pt-BR')
+            });
+
+            mostrarNotificacao('Documento enviado para aprovação!', 'success');
+            limparFormularioDocumento();
+        }
+
+        function limparFormularioDocumento() {
+            document.getElementById('tipoDocumento').value = '';
+            document.getElementById('referenciaDocumento').value = '';
+            document.getElementById('valorDocumento').value = '';
+            document.getElementById('observacoesDocumento').value = '';
+            document.getElementById('arquivoDocumento').value = '';
+        }
+
+        function visualizarDocumento(id) {
+            mostrarNotificacao('Abrindo documento...', 'info');
+        }
+
+        // Funções de Relatórios
+        function gerarRelatorio() {
+            const tipo = document.getElementById('tipoRelatorio').value;
+            const dataInicio = document.getElementById('dataInicio').value;
+            const dataFim = document.getElementById('dataFim').value;
+            const formato = document.getElementById('formatoExportacao').value;
+
+            if (!tipo || !dataInicio || !dataFim) {
+                mostrarNotificacao('Por favor, preencha todos os campos', 'error');
+                return;
+            }
+
+            mostrarNotificacao(`Relatório em ${formato.toUpperCase()} gerado e baixado!`, 'success');
+        }
+
+        // Funções Administrativas
+        function liberarAcesso(id) {
+            const prestador = document.querySelectorAll('#tabelaPrestadores tr')[id];
+            const nome = prestador.cells[0].textContent;
+            document.getElementById('prestadorLiberacao').value = nome;
+            abrirModal('modalLiberacao');
+        }
+
+        function confirmarLiberacao() {
+            const motivo = document.getElementById('motivoLiberacao').value;
+            const horas = document.getElementById('horasExtras').value;
+
+            if (!motivo || !horas) {
+                mostrarNotificacao('Por favor, preencha todos os campos', 'error');
+                return;
+            }
+
+            mostrarNotificacao('Prestador liberado com sucesso!', 'success');
+            fecharModal('modalLiberacao');
+            document.getElementById('motivoLiberacao').value = '';
+            document.getElementById('horasExtras').value = '';
+        }
+
+        function editarPrestador(id) {
+            mostrarNotificacao('Abrindo formulário de edição...', 'info');
+        }
+
+        function aprovarDocumento(id) {
+            mostrarNotificacao('Documento aprovado com sucesso!', 'success');
+        }
+
+        function rejeitarDocumento(id) {
+            mostrarNotificacao('Documento rejeitado!', 'warning');
+        }
+
+        function aplicarFiltros() {
+            mostrarNotificacao('Filtros aplicados!', 'info');
+        }
+
+        function aplicarFiltrosAdmin() {
+            mostrarNotificacao('Filtros administrativos aplicados!', 'info');
+        }
+
+        // Funções Utilitárias
+        function calcularHoras(entrada, saida) {
+            const [hE, mE] = entrada.split(':').map(Number);
+            const [hS, mS] = saida.split(':').map(Number);
+            const minutos = (hS * 60 + mS) - (hE * 60 + mE);
+            return Math.round(minutos / 60 * 10) / 10;
+        }
+
+        function formatarData(data) {
+            const date = new Date(data);
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        function atualizarProgresso() {
+            const totalHoras = apontamentos.reduce((sum, a) => sum + a.horas, 0);
+            const cargaContratada = 160;
+            const percentual = Math.round((totalHoras / cargaContratada) * 100);
+
+            document.getElementById('horasTrabalhadas').textContent = totalHoras;
+            document.getElementById('percentualUtilizado').textContent = percentual + '%';
+            document.getElementById('progressText').textContent = `${totalHoras} / ${cargaContratada} horas`;
+
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = Math.min(percentual, 100) + '%';
+            progressFill.textContent = percentual + '%';
+
+            // Verificar alertas
+            if (percentual >= 100) {
+                mostrarAlerta('danger', '🚫 Você atingiu a carga horária contratada do mês. Para continuar trabalhando, é necessária liberação administrativa.');
+                progressFill.classList.add('danger');
+            } else if (percentual >= 80) {
+                mostrarAlerta('warning', '⚠️ Você está próximo de atingir sua carga horária contratada deste mês.');
+                progressFill.classList.add('warning');
+            } else {
+                progressFill.classList.remove('warning', 'danger');
+                limparAlertas();
+            }
+        }
+
+        function mostrarAlerta(tipo, mensagem) {
+            const container = document.getElementById('alertContainer');
+            const alerta = document.createElement('div');
+            alerta.className = `alert alert-${tipo}`;
+            alerta.textContent = mensagem;
+            container.innerHTML = '';
+            container.appendChild(alerta);
+        }
+
+        function limparAlertas() {
+            document.getElementById('alertContainer').innerHTML = '';
+        }
+
+        function mostrarNotificacao(mensagem, tipo = 'info') {
+            const notif = document.createElement('div');
+            notif.className = `notification ${tipo}`;
+            notif.textContent = mensagem;
+            document.body.appendChild(notif);
+
+            setTimeout(() => {
+                notif.remove();
+            }, 3000);
+        }
+
+        // Inicializar
+        atualizarProgresso();
+    </script>
+</body>
+</html>
