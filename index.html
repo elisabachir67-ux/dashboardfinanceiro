@@ -1534,5 +1534,29 @@
         // Inicializar
         atualizarProgresso();
     </script>
+    <script type="module">
+  // 1. Importações ajustadas para funcionar no navegador
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // 2. Seu bloco de configuração (copiado da sua imagem)
+  const firebaseConfig = {
+    apiKey: "AIzaSyANNhsWvZ380WxHSqtZVnHb8fmApHDvjqc",
+    authDomain: "dashboard-financeiro-f8eca.firebaseapp.com",
+    projectId: "dashboard-financeiro-f8eca",
+    storageBucket: "dashboard-financeiro-f8eca.firebasestorage.app",
+    messagingSenderId: "536350710408",
+    appId: "1:536350710408:web:e96862650b217a97e59d3d",
+    measurementId: "G-2PTZ65CHGY"
+  };
+
+  // 3. Inicialização
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getFirestore(app); // Adicionei isso para você já poder usar o banco de dados
+
+  console.log("Firebase conectado!");
+</script>
 </body>
 </html>
